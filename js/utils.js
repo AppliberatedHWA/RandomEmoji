@@ -8,4 +8,7 @@ export default class Utils {
         return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
     }
 
+    static getRandomColor() {
+        return '#' + Math.floor(Math.random()*16777215).toString(16);
+    }
 }
