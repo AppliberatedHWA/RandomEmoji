@@ -6,23 +6,49 @@ import Utils from "/js/utils.js";
 
     let emojiLoaded = false;
     let emojiData;
-    let emojiElement = document.getElementById("random-emoji");
+    let emojiSection = document.getElementById("emoji-section");
+    let emojiWrapper = document.getElementById("emoji-wrapper");
+ 
     let emojiNameElement = document.getElementById("emoji-name");
+    let emojiSizeInput = document.getElementById("emoji-size");
+    const colorButtonGroup = document.querySelector(".apl-color-button-group");
+    const customColorButton = document.getElementById("custom-color-button");
+    
+    
 
     function nextRandomEmoji() {
         if (!emojiLoaded) return;
 
         let index = Utils.getRandomInt(0, emojiData.length);
-        emojiElement.innerHTML = twemoji.parse(emojiData[index].e, { folder: "svg", ext: ".svg" });
-        emojiElement.dataset.shortName = emojiData[index].n;
-        document.body.style.backgroundColor = Utils.getRandomColor();
+        emojiWrapper.innerHTML = twemoji.parse(emojiData[index].e, { folder: "svg", ext: ".svg" });
+        emojiWrapper.dataset.shortName = emojiData[index].n;
+        // emojiSection.style.backgroundColor = Utils.getRandomColor();
         emojiNameElement.innerText = emojiData[index].n;
-        emojiNameElement.classList.remove("visible");
     }
 
-    function showEmojiName(event) {
-        event.preventDefault();
-        emojiNameElement.classList.toggle("visible");
+    function handleEmojiSizeInput() {
+        emojiWrapper.style.maxWidth = emojiWrapper.style.maxHeight = `${emojiSizeInput.value}%`;
+    }
+
+    function onColorItemClick(event) {
+        if (event.target.matches("button")) {
+            emojiSection.style.backgroundColor = window.getComputedStyle(event.target).getPropertyValue("background-color");
+            Array.from(colorButtonGroup.children, item => item.classList.remove("apl-color-button--active"));
+            event.target.classList.add("apl-color-button--active");
+        }
+    }
+
+    function onCustomColorInput(event) {
+        customColorButton.style.backgroundColor = event.target.value;
+        event.target.classList.add("apl-color-button--active");
+        customColorButton.click();
+    }
+
+    function initEvents() {
+        colorButtonGroup.addEventListener("click", onColorItemClick);
+        
+        const customColorInput = document.getElementById("custom-color");
+        customColorInput.addEventListener("change", onCustomColorInput);
     }
 
     fetch("/js/emoji.json")
@@ -33,7 +59,9 @@ import Utils from "/js/utils.js";
             nextRandomEmoji();
         });
 
-    emojiElement.addEventListener("contextmenu", showEmojiName);
-    emojiElement.addEventListener("dblclick", () => nextRandomEmoji());
+    emojiWrapper.addEventListener("dblclick", () => nextRandomEmoji());
+    emojiSizeInput.addEventListener("input", handleEmojiSizeInput);
+
+    initEvents();
 
 }());

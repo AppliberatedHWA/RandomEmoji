@@ -8,16 +8,38 @@
     <title>Random Emoji 3</title>
     <link rel="manifest" href="/manifest.json">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" />
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
-    <main>
-        <i class="emoji" id="random-emoji"></i>
-    </main>
+    <section id="emoji-section">
+        <i id="emoji-wrapper"></i>
+    </section>
 
-    <footer id="emoji-name">
-    </footer>
+    <section class="apl-container">
+        <p id="emoji-name"></p>
+        <p>
+            <input type="text">
+        </p>
+        <p>
+            <input type="range" id="emoji-size" min="1" max="100" value="100">
+        </p>
+        <div class="apl-color-button-group">
+            <button class="apl-color-button apl-color-button--black"></button>
+            <button class="apl-color-button apl-color-button--white"></button>
+            <button class="apl-color-button apl-color-button--red"></button>
+            <button class="apl-color-button apl-color-button--emoji apl-color-button--active"></button>
+            <button class="apl-color-button" id="custom-color-button">
+                <input type="color" id="custom-color">
+            </button>
+        </div>
+
+        <div>
+        </div>
+
+    </section>
+
 
     <script src="//twemoji.maxcdn.com/2/twemoji.min.js?2.3.1"></script>
     <script type="module" src="/js/main.js"></script>
