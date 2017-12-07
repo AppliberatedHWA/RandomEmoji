@@ -11,7 +11,7 @@ import Utils from "/js/utils.js";
  
     let emojiNameElement = document.getElementById("emoji-name");
     let emojiSizeInput = document.getElementById("emoji-size");
-    const colorButtonGroup = document.querySelector(".apl-color-button-group");
+    const colorButtonGroup = document.getElementById("color-button-group");
     const customColorButton = document.getElementById("custom-color-button");
     
     
@@ -22,7 +22,6 @@ import Utils from "/js/utils.js";
         let index = Utils.getRandomInt(0, emojiData.length);
         emojiWrapper.innerHTML = twemoji.parse(emojiData[index].e, { folder: "svg", ext: ".svg" });
         emojiWrapper.dataset.shortName = emojiData[index].n;
-        // emojiSection.style.backgroundColor = Utils.getRandomColor();
         emojiNameElement.innerText = emojiData[index].n;
     }
 
@@ -30,18 +29,29 @@ import Utils from "/js/utils.js";
         emojiWrapper.style.maxWidth = emojiWrapper.style.maxHeight = `${emojiSizeInput.value}%`;
     }
 
+    function setNewColor(color, colorButton) {
+        emojiSection.style.backgroundColor = color;
+        Array.from(colorButtonGroup.children, item => item.classList.remove("apl-color-button--active"));
+        colorButton.classList.add("apl-color-button--active");
+    }
+
+    function setCustomColor(color) {
+        customColorButton.style.backgroundColor = color;
+        setNewColor(color, customColorButton);
+    }
+
     function onColorItemClick(event) {
         if (event.target.matches("button")) {
-            emojiSection.style.backgroundColor = window.getComputedStyle(event.target).getPropertyValue("background-color");
-            Array.from(colorButtonGroup.children, item => item.classList.remove("apl-color-button--active"));
-            event.target.classList.add("apl-color-button--active");
+            setNewColor(window.getComputedStyle(event.target).getPropertyValue("background-color"), event.target);
         }
     }
 
     function onCustomColorInput(event) {
-        customColorButton.style.backgroundColor = event.target.value;
-        event.target.classList.add("apl-color-button--active");
-        customColorButton.click();
+        setCustomColor(event.target.value);
+    }
+
+    function onRandomColorButtonClick() {
+        setCustomColor(Utils.getRandomColor());
     }
 
     function initEvents() {
@@ -49,6 +59,9 @@ import Utils from "/js/utils.js";
         
         const customColorInput = document.getElementById("custom-color");
         customColorInput.addEventListener("change", onCustomColorInput);
+
+        const randomColorButton = document.getElementById("random-color-button");
+        randomColorButton.addEventListener("click", onRandomColorButtonClick);
     }
 
     fetch("/js/emoji.json")
